@@ -30,4 +30,18 @@ public class ProblemRequest {
         this.finalExpression = finalExpression;
     }
 
+    /** Returns String representation of problem's data
+     * @return String
+     */
+    @Override
+    public String toString() {
+        return "ProblemRequest{" +
+                "disciplineId=" + disciplineId +
+                ", topicId=" + topicId +
+                ", difficulty=" + difficulty +
+                ", statement='" + statement + '\'' +
+                ", startExpression='" + startExpression + '\'' +
+                ", finalExpression='" + finalExpression + '\'' +
+                '}';
+    }
 }

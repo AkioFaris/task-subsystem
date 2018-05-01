@@ -8,16 +8,16 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 
 /**
- * TODO: fill JavaDoc
+ * Problems controller handles requests on managing problems
  */
 @RestController
 @RequestMapping(value = "/task/problems", consumes = "application/json", produces = "application/json")
 public class ProblemsController {
 
     /**
-     * TODO: fill JavaDoc
-     * @param testId
-     * @return
+     * Gets problems formulations
+     * @param testId long - test id
+     * @return String[] - an array with problems formulations
      * @throws SQLException
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.GET)
@@ -27,8 +27,9 @@ public class ProblemsController {
     }
 
     /**
-     * TODO: fill JavaDoc
-     * @param problemRequest
+     * Adds a problem to the database
+     * @param problemRequest ProblemRequest - a set of problems data (discipline and topic ids, difficulty, statement,
+     *                      start and final expressions)
      * @throws SQLException
      */
     @RequestMapping(method = RequestMethod.POST)

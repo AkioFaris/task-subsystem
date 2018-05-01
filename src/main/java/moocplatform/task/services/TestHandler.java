@@ -1,11 +1,16 @@
 package moocplatform.task.services;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.SQLException;
 
 /**
- * TODO: fill JavaDoc
+ * Test handler allows to evaluate test solutions and mark them
  */
 public class TestHandler {
+    private final static Logger logger = LoggerFactory.getLogger(TestHandler.class);
+
     /**
      * Evaluates test solution
      * @param testId long - test id
@@ -14,6 +19,8 @@ public class TestHandler {
      * @throws SQLException
      */
     public static int evaluate(long testId, String testSolution) throws SQLException {
+        logger.info("Input values: testId {}\n testSolution {}\n", testId, testSolution);
+
         DbManager dbManager = DbManager.getInstance();
         //TODO: get problems start and final expressions from db with assistance of dbManager
         //TODO: use Katsman's API to check solutions

@@ -2,6 +2,9 @@ package moocplatform.task.services;
 
 import moocplatform.task.pojos.ProblemRequest;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -19,12 +22,17 @@ public class DbManager {
     private static final String dB_USER_NAME = "root";
     private static final String DB_PASS = "localhost";
 
+    private final static Logger logger = LoggerFactory.getLogger(DbManager.class);
+
+
     private DbManager() throws SQLException {
         try {
             Class.forName(DB_DRIVER);
             this.connection = DriverManager.getConnection(DB_URL + DB_NAME, dB_USER_NAME, DB_PASS);
+            logger.info("Set up connection through url {} with database {} by user {} with password {}",
+                    DB_URL, DB_NAME, dB_USER_NAME, DB_PASS);
         } catch (ClassNotFoundException ex) {
-            System.out.println("Database Connection Creation Failed : " + ex.getMessage());
+            logger.error("Database Connection Creation Failed : " + ex.getMessage());
         }
     }
 
@@ -36,6 +44,7 @@ public class DbManager {
         if (instance == null || instance.getConnection().isClosed()) {
             instance = new DbManager();
         }
+        logger.info("Got DB instance");
         return instance;
     }
 
@@ -44,6 +53,7 @@ public class DbManager {
      * @param problemRequest ProblemRequest - a problemRequest to add
      */
     public void addProblem(ProblemRequest problemRequest) {
+        logger.info("Input values: problemRequest {}\n", problemRequest);
         // implementation omitted
     }
 
@@ -53,18 +63,21 @@ public class DbManager {
      * @return String[] - a list of problems formulations
      */
     public String[] getProblemsFormulations(long testId) {
+        logger.info("Input values: testId {}\n", testId);
         // implementation omitted
         return null;
     }
 
     /**
      * Gets an array of problems ids in the database
-     * @param disciplineId long - if of a fiscipline
+     * @param disciplineId long - if of a discipline
      * @param topicIds long[] - topics ids
      * @param problemsDifficulties int[] - problems difficulties
      * @return long[] - an array of problems ids
      */
     public long[] getProblemsIds(long disciplineId, long[] topicIds, int[] problemsDifficulties) {
+        logger.info("Input values: disciplineId {}\n topicIds {}\n problemsDifficulties {}\n", disciplineId, topicIds,
+                problemsDifficulties);
         // implementation omitted
         return null;
     }
@@ -75,6 +88,7 @@ public class DbManager {
      * @return long - the new test's id
      */
     public long initTest(long[] problemIds) {
+        logger.info("Input values: problemIds {}\n scores {}\n", problemIds);
         // implementation omitted
         return 0;
     }
@@ -85,6 +99,7 @@ public class DbManager {
      * @param scores int[] - scores of the test problems
      */
     public void createTest(long testId, int[] scores) {
+        logger.info("Input values: testId {}\n scores {}\n", testId, scores);
         // implementation omitted
     }
 }

@@ -8,16 +8,16 @@ import java.sql.SQLException;
  * A POJO of a problems set
  */
 public class ProblemsSet {
-    public final String[] problems;
+    public final String[] problemsDescriptions;
     public final long testId;
 
     /**
      * Problems Set constructor
-     * @param problems String[] - problems descriptions
+     * @param problemsDescriptions String[] - problems descriptions
      * @param testId long - test id
      */
-    public ProblemsSet(String[] problems, long testId) {
-        this.problems = problems;
+    public ProblemsSet(String[] problemsDescriptions, long testId) {
+        this.problemsDescriptions = problemsDescriptions;
         this.testId = testId;
     }
 
@@ -31,7 +31,7 @@ public class ProblemsSet {
         final long[] problemIds = dbManager.getProblemsIds(problemsSetRequest.disciplineId, problemsSetRequest.topicIds,
                 problemsSetRequest.problemsDifficulties);
         testId = dbManager.initTest(problemIds);
-        problems = dbManager.getProblemsFormulations(testId);
+        problemsDescriptions = dbManager.getProblemsFormulations(testId);
 
     }
 }

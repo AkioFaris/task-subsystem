@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.*;
 import java.sql.SQLException;
 
 /**
- * TODO: fill JavaDoc
+ * Test controller handles requests on managing test
  */
 @RestController
 @RequestMapping(value = "/task/tests", consumes = "application/json", produces = "application/json")
 public class TestsController {
 
     /**
-     * TODO: fill JavaDoc
-     * @param problemsSetRequest
-     * @return
+     * Generates a problems set
+     * @param problemsSetRequest ProblemsSetRequest -
+     * @return ProblemsSet - problems descriptions and test id
      * @throws SQLException
      */
     @RequestMapping(method = RequestMethod.POST)
@@ -27,9 +27,9 @@ public class TestsController {
     }
 
     /**
-     * TODO: fill JavaDoc
-     * @param testId
-     * @param scores
+     * Creates a new test by problems set id (the new test id) and scores for each problem of the set
+     * @param testId long - test id, which was obtained after problems set generation
+     * @param scores int[] - scores for each problem of the problems set
      * @throws SQLException
      */
     @RequestMapping(value = "/{testId}", method = RequestMethod.PUT)
