@@ -11,7 +11,7 @@ import java.sql.SQLException;
  * Problems controller handles requests on managing problems
  */
 @RestController
-@RequestMapping(value = "/task/problems", consumes = "application/json", produces = "application/json")
+@RequestMapping(value = "/task/problems", produces = "application/json")
 public class ProblemsController {
 
     /**
@@ -32,7 +32,7 @@ public class ProblemsController {
      *                      start and final expressions)
      * @throws SQLException
      */
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = "application/json")
     public void addProblem(@RequestBody ProblemRequest problemRequest) throws SQLException {
         DbManager dbManager = DbManager.getInstance();
         dbManager.addProblem(problemRequest);
