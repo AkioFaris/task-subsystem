@@ -1,0 +1,3 @@
+CREATE DATABASE apprz_db DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+CREATE USER 'FAN'@'localhost' IDENTIFIED BY '2018';
+GRANT ALL ON apprz_db.* TO 'FAN'@'localhost' IDENTIFIED BY '2018';

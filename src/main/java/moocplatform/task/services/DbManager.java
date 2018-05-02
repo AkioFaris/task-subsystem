@@ -20,9 +20,9 @@ public class DbManager {
 
     private final static Logger logger = LoggerFactory.getLogger(DbManager.class);
 
-
     private DbManager() throws SQLException {
         try {
+            logger.info("Trying to set up a connection to database: " + DB_NAME.text);
             Class.forName(DRIVER.text);
             this.connection = DriverManager.getConnection(JDBC_URL.text, USER_NAME.text, PASS.text);
             logger.info("Set up connection with database {} by user {} with password {}", DB_NAME.text, USER_NAME.text,
@@ -61,7 +61,12 @@ public class DbManager {
     public String[] getProblemsFormulations(long testId) {
         logger.info("Input values: testId {}\n", testId);
         // implementation omitted
-        return null;
+        // TODO: Add a proper implementation
+        return new String[]{
+                "Problem №1: Given: 5x=0. Find x",
+                "Problem №2: Given: 5x^4+5x^2=0. Find x",
+                "Problem №3: Given: 605x-28=0. Find x"
+        };
     }
 
     /**

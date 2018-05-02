@@ -5,7 +5,7 @@ public enum DbConfigurations {
     HOST("localhost"),
     PORT("3306"),
     DB_NAME("apprz_db"),
-    JDBC_URL("jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME),
+    JDBC_URL("jdbc:mysql://" + HOST.text + ":" + PORT.text + "/" + DB_NAME.text),
     USER_NAME("FAN"),
     PASS("2018");
 
