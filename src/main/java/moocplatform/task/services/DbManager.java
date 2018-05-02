@@ -9,6 +9,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import static moocplatform.task.enums.DbConfigurations.*;
+
 /**
  * Database manager is a Singleton which performs a work with the database according to needs of task sub-system
  */
@@ -16,22 +18,15 @@ public class DbManager {
     private static DbManager instance;
     private Connection connection;
 
-    private static final String DB_DRIVER = "com.mysql.jdbc.Driver";
-    private static final String HOST = "localhost";
-    private static final String PORT = "3306";
-    private static final String DB_NAME = "apprz_db";
-    private static final String DB_URL = "jdbc:mysql://" + HOST + ":" + PORT + "/" + DB_NAME;
-    private static final String DB_USER_NAME = "FAN";
-    private static final String DB_PASS = "2018";
-
     private final static Logger logger = LoggerFactory.getLogger(DbManager.class);
 
 
     private DbManager() throws SQLException {
         try {
-            Class.forName(DB_DRIVER);
-            this.connection = DriverManager.getConnection(DB_URL, DB_USER_NAME, DB_PASS);
-            logger.info("Set up connection with database {} by user {} with password {}", DB_NAME, DB_USER_NAME, DB_PASS);
+            Class.forName(DRIVER.text);
+            this.connection = DriverManager.getConnection(JDBC_URL.text, USER_NAME.text, PASS.text);
+            logger.info("Set up connection with database {} by user {} with password {}", DB_NAME.text, USER_NAME.text,
+                    PASS.text);
         } catch (ClassNotFoundException ex) {
             logger.error("Database Connection Creation Failed : " + ex.getMessage());
         }
