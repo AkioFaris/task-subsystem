@@ -2,14 +2,18 @@ package moocplatform.task.pojos;
 
 import moocplatform.task.services.DbManager;
 
+import java.io.Serializable;
 import java.sql.SQLException;
 
 /**
  * A POJO of a problems set
  */
-public class ProblemsSet {
-    public final String[] problemsDescriptions;
-    public final long testId;
+public class ProblemsSet implements Serializable {
+    public String[] problemsDescriptions;
+    public long testId;
+
+    public ProblemsSet() {
+    }
 
     /**
      * Problems Set constructor
@@ -32,6 +36,13 @@ public class ProblemsSet {
                 problemsSetRequest.problemsDifficulties);
         testId = dbManager.initTest(problemIds);
         problemsDescriptions = dbManager.getProblemsFormulations(testId);
+    }
 
+    public void setProblemsDescriptions(String[] problemsDescriptions) {
+        this.problemsDescriptions = problemsDescriptions;
+    }
+
+    public void setTestId(long testId) {
+        this.testId = testId;
     }
 }

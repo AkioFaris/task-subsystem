@@ -1,15 +1,20 @@
 package moocplatform.task.pojos;
 
+import java.io.Serializable;
+
 /**
  * A POJO of a problem
  */
-public class ProblemRequest {
-    public final long disciplineId;
-    public final long topicId;
-    public final int difficulty;
-    public final String statement;
-    public final String startExpression;
-    public final String finalExpression;
+public class ProblemRequest implements Serializable {
+    public long disciplineId;
+    public long topicId;
+    public int difficulty;
+    public String statement;
+    public String startExpression;
+    public String finalExpression;
+
+    public ProblemRequest() {
+    }
 
     /**
      * A problem's constructor
@@ -43,5 +48,29 @@ public class ProblemRequest {
                 ", startExpression='" + startExpression + '\'' +
                 ", finalExpression='" + finalExpression + '\'' +
                 '}';
+    }
+
+    public void setDisciplineId(long disciplineId) {
+        this.disciplineId = disciplineId;
+    }
+
+    public void setTopicId(long topicId) {
+        this.topicId = topicId;
+    }
+
+    public void setDifficulty(int difficulty) {
+        this.difficulty = difficulty;
+    }
+
+    public void setStatement(String statement) {
+        this.statement = statement;
+    }
+
+    public void setStartExpression(String startExpression) {
+        this.startExpression = startExpression;
+    }
+
+    public void setFinalExpression(String finalExpression) {
+        this.finalExpression = finalExpression;
     }
 }

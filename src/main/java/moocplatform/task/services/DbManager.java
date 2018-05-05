@@ -5,9 +5,9 @@ import moocplatform.task.pojos.ProblemRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import javax.xml.validation.Schema;
+import java.sql.*;
+import java.util.ArrayList;
 
 import static moocplatform.task.enums.DbConfigurations.*;
 
@@ -48,9 +48,16 @@ public class DbManager {
      * Adds a new problemRequest to the data base
      * @param problemRequest ProblemRequest - a problemRequest to add
      */
-    public void addProblem(ProblemRequest problemRequest) {
+    public void addProblem(ProblemRequest problemRequest) throws SQLException {
         logger.info("Input values: problemRequest {}\n", problemRequest);
-        // implementation omitted
+        String addProblem = "INSERT INTO problems(statement, difficulty, id_topic, id_discipline, " +
+                "start_expression, final_expression) VALUES('" + problemRequest.statement + "', "
+                + problemRequest.difficulty + "," + problemRequest.topicId + ", " + problemRequest.disciplineId + ", '"
+                + problemRequest.startExpression + "', '" + problemRequest.finalExpression + "')";
+
+        Statement statement = connection.createStatement();
+        statement.executeQuery("USE apprz_db");
+        statement.executeUpdate(addProblem);
     }
 
     /**
@@ -58,15 +65,19 @@ public class DbManager {
      * @param testId long - id of a test
      * @return String[] - a list of problems formulations
      */
-    public String[] getProblemsFormulations(long testId) {
+    public String[] getProblemsFormulations(long testId) throws SQLException {
         logger.info("Input values: testId {}\n", testId);
-        // implementation omitted
-        // TODO: Add a proper implementation
-        return new String[]{
-                "Problem №1: Given: 5x=0. Find x",
-                "Problem №2: Given: 5x^4+5x^2=0. Find x",
-                "Problem №3: Given: 605x-28=0. Find x"
-        };
+        String selectProblemsByTestId = "SELECT pr.statement FROM problems pr INNER JOIN test_problems t_pr " +
+                "ON pr.id_problem = t_pr.id_problem WHERE t_pr.id_test = " + testId;
+
+        Statement statement = connection.createStatement();
+        statement.executeQuery("USE apprz_db");
+        ResultSet resultSet = statement.executeQuery(selectProblemsByTestId);
+        ArrayList<String> formulations = new ArrayList<>();
+        while(resultSet.next()){
+            formulations.add(resultSet.getString(1));
+        }
+        return formulations.toArray(new String[formulations.size()]);
     }
 
     /**

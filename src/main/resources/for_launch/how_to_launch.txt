@@ -1,3 +1,6 @@
-1. Launch mysql server
-2. Compile and run Task Application 
+How to fun instruction
+
+0. Launch mysql server
+1. execute scripts from resources/for_launch: createDbAndUser.sql, resetDb.sql
+2. in cmd execute: java -jar task.jar
 3. Send requests through Insomnia
