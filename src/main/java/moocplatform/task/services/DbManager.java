@@ -5,8 +5,8 @@ import moocplatform.task.pojos.ProblemRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.xml.validation.Schema;
 import java.sql.*;
+
 import java.util.ArrayList;
 
 import static moocplatform.task.enums.DbConfigurations.*;
@@ -19,6 +19,7 @@ public class DbManager {
     private Connection connection;
 
     private final static Logger logger = LoggerFactory.getLogger(DbManager.class);
+    private final String USE_DB_QUERY = "USE " + DB_NAME.text;
 
     private DbManager() throws SQLException {
         try {
@@ -50,14 +51,15 @@ public class DbManager {
      */
     public void addProblem(ProblemRequest problemRequest) throws SQLException {
         logger.info("Input values: problemRequest {}\n", problemRequest);
-        String addProblem = "INSERT INTO problems(statement, difficulty, id_topic, id_discipline, " +
+        String addProblem = "INSERT INTO problems(statement, difficulty, topic_id, discipline_id, " +
                 "start_expression, final_expression) VALUES('" + problemRequest.statement + "', "
                 + problemRequest.difficulty + "," + problemRequest.topicId + ", " + problemRequest.disciplineId + ", '"
                 + problemRequest.startExpression + "', '" + problemRequest.finalExpression + "')";
 
         Statement statement = connection.createStatement();
-        statement.executeQuery("USE apprz_db");
+        statement.executeQuery(USE_DB_QUERY);
         statement.executeUpdate(addProblem);
+        logger.info("Added a problem successfully");
     }
 
     /**
@@ -67,16 +69,17 @@ public class DbManager {
      */
     public String[] getProblemsFormulations(long testId) throws SQLException {
         logger.info("Input values: testId {}\n", testId);
-        String selectProblemsByTestId = "SELECT pr.statement FROM problems pr INNER JOIN test_problems t_pr " +
-                "ON pr.id_problem = t_pr.id_problem WHERE t_pr.id_test = " + testId;
+        String selectProblemsByTestId = "SELECT pr.statement FROM problems pr INNER JOIN tests_problems t_pr " +
+                "ON pr.problem_id = t_pr.problem_id WHERE t_pr.test_id = " + testId;
 
         Statement statement = connection.createStatement();
-        statement.executeQuery("USE apprz_db");
+        statement.executeQuery(USE_DB_QUERY);
         ResultSet resultSet = statement.executeQuery(selectProblemsByTestId);
         ArrayList<String> formulations = new ArrayList<>();
         while(resultSet.next()){
             formulations.add(resultSet.getString(1));
         }
+        logger.info("Got problems formulations for the test with id " + testId + ":\n" + formulations.toString());
         return formulations.toArray(new String[formulations.size()]);
     }
 

@@ -1,5 +1,3 @@
-drop database IF EXISTS apprz_db;
-
-source createTables.sql
-
-source fillTables.sql
+drop database IF EXISTS core;
+source core.sql;
+source fillTables.sql;
