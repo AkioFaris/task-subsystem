@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-
 import java.util.ArrayList;
 
 import static moocplatform.task.enums.DbConfigurations.*;
@@ -68,7 +67,7 @@ public class DbManager {
      * @return String[] - a list of problems formulations
      */
     public String[] getProblemsFormulations(long testId) throws SQLException {
-        logger.info("Input values: testId {}\n", testId);
+        logger.info("Input values: testId " + testId);
         String selectProblemsByTestId = "SELECT pr.statement FROM problems pr INNER JOIN tests_problems t_pr " +
                 "ON pr.problem_id = t_pr.problem_id WHERE t_pr.test_id = " + testId;
 
@@ -76,10 +75,10 @@ public class DbManager {
         statement.executeQuery(USE_DB_QUERY);
         ResultSet resultSet = statement.executeQuery(selectProblemsByTestId);
         ArrayList<String> formulations = new ArrayList<>();
-        while(resultSet.next()){
+        while (resultSet.next()) {
             formulations.add(resultSet.getString(1));
         }
-        logger.info("Got problems formulations for the test with id " + testId + ":\n" + formulations.toString());
+        logger.info("Got problems formulations " + formulations + "for the test with id " + testId);
         return formulations.toArray(new String[formulations.size()]);
     }
 
@@ -90,11 +89,33 @@ public class DbManager {
      * @param problemsDifficulties int[] - problems difficulties
      * @return long[] - an array of problems ids
      */
-    public long[] getProblemsIds(long disciplineId, long[] topicIds, int[] problemsDifficulties) {
+    public long[] getProblemsIds(long disciplineId, long[] topicIds, int[] problemsDifficulties, int[] amountByDifficulties)
+            throws SQLException {
         logger.info("Input values: disciplineId {}\n topicIds {}\n problemsDifficulties {}\n", disciplineId, topicIds,
                 problemsDifficulties);
-        // implementation omitted
-        return null;
+        Statement statement = connection.createStatement();
+        statement.executeQuery(USE_DB_QUERY);
+
+        ArrayList<Long> problemIds = new ArrayList<>();
+        StringBuilder defaultSelect = new StringBuilder("SELECT problem_id FROM problems WHERE discipline_id = ")
+                .append(disciplineId).append(" AND (topic_id = ").append(topicIds[0]);
+        for (long topicId : topicIds) {
+            defaultSelect.append(" OR topic_id = ").append(topicId);
+        }
+        for (int i = 0; i < problemsDifficulties.length; i++) {
+            StringBuilder selectProblems = new StringBuilder(defaultSelect);
+            selectProblems.append(") AND difficulty = ").append(problemsDifficulties[i]);
+            logger.info("SQL query:" + selectProblems + "\n");
+
+            ResultSet resultProblems = statement.executeQuery(selectProblems.toString());
+            int j = 0;
+            while (resultProblems.next() && j < amountByDifficulties[i]) {
+                problemIds.add(resultProblems.getLong(1));
+                ++j;
+            }
+        }
+        logger.info("Got problems ids " + problemIds + " for the discipline with id " + disciplineId + "\n");
+        return problemIds.stream().mapToLong(l -> l).toArray();
     }
 
     /**
@@ -102,9 +123,26 @@ public class DbManager {
      * @param problemIds long[] - problems ids
      * @return long - the new test's id
      */
-    public long initTest(long[] problemIds) {
+    public long initTest(long disciplineId, long[] problemIds) throws SQLException {
         logger.info("Input values: problemIds {}\n scores {}\n", problemIds);
-        // implementation omitted
+        Statement statement = connection.createStatement();
+        statement.executeQuery(USE_DB_QUERY);
+
+        String initTest = "INSERT INTO tests(discipline_id) VALUES('" + disciplineId + "')";
+        statement.executeUpdate(initTest);
+
+        String selectTest = "SELECT LAST_INSERT_ID() AS LAST_ID";
+        ResultSet resultTest = statement.executeQuery(selectTest);
+        resultTest.next();
+        String testId = resultTest.getString("LAST_ID");
+
+        for (int i = 0; i < problemIds.length; ++i) {
+            String addTestProblem = "INSERT INTO tests_problems(test_id, problem_id, score, problem_local_id) " +
+                "VALUES(" + testId + ", " + problemIds[i] + ", " + 0 + ", " + i + ")";
+            logger.info("SQL query:" + addTestProblem + "\n");
+            statement.executeUpdate(addTestProblem);
+        }
+        logger.info("Added a new test draft successfully");
         return 0;
     }
 
@@ -113,8 +151,15 @@ public class DbManager {
      * @param testId long - test id
      * @param scores int[] - scores of the test problems
      */
-    public void createTest(long testId, int[] scores) {
-        logger.info("Input values: testId {}\n scores {}\n", testId, scores);
-        // implementation omitted
+    public void createTest(long testId, int[] scores) throws SQLException {
+        logger.info("Input values: testId " + testId + " scores " + scores);
+        Statement statement = connection.createStatement();
+        statement.executeQuery(USE_DB_QUERY);
+        for (int i = 0; i < scores.length; ++i) {
+            String addScore = "UPDATE tests_problems SET score = " + scores[i] + " WHERE test_id = " + testId
+                    + " AND problem_local_id = " + i;
+            statement.executeUpdate(addScore);
+        }
+        logger.info("Added scores successfully");
     }
 }

@@ -9,6 +9,7 @@ public class ProblemsSetRequest implements Serializable {
     public long disciplineId;
     public long[] topicIds;
     public int[] problemsDifficulties;
+    public int[] amountByDifficulties;
 
     public ProblemsSetRequest() {
     }
@@ -18,11 +19,13 @@ public class ProblemsSetRequest implements Serializable {
      * @param disciplineId long - id of a discipline
      * @param topicIds long[] - ids of a topics
      * @param problemsDifficulties int[] - problems difficulties
+     * @param amountByDifficulties int[] - problems amount by difficulties
      */
-    public ProblemsSetRequest(long disciplineId, long[] topicIds, int[] problemsDifficulties) {
+    public ProblemsSetRequest(long disciplineId, long[] topicIds, int[] problemsDifficulties, int[] amountByDifficulties) {
         this.disciplineId = disciplineId;
         this.topicIds = topicIds;
         this.problemsDifficulties = problemsDifficulties;
+        this.amountByDifficulties = amountByDifficulties;
     }
 
     public void setDisciplineId(long disciplineId) {
@@ -35,5 +38,9 @@ public class ProblemsSetRequest implements Serializable {
 
     public void setProblemsDifficulties(int[] problemsDifficulties) {
         this.problemsDifficulties = problemsDifficulties;
+    }
+
+    public void setAmountByDifficulties(int[] amountByDifficulties) {
+        this.amountByDifficulties = amountByDifficulties;
     }
 }

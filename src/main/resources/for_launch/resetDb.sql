@@ -1,3 +1,3 @@
 drop database IF EXISTS core;
-source core.sql;
+source dean.sql;
 source fillTables.sql;

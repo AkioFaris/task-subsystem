@@ -33,8 +33,8 @@ public class ProblemsSet implements Serializable {
     public ProblemsSet(ProblemsSetRequest problemsSetRequest) throws SQLException {
         DbManager dbManager = DbManager.getInstance();
         final long[] problemIds = dbManager.getProblemsIds(problemsSetRequest.disciplineId, problemsSetRequest.topicIds,
-                problemsSetRequest.problemsDifficulties);
-        testId = dbManager.initTest(problemIds);
+                problemsSetRequest.problemsDifficulties, problemsSetRequest.amountByDifficulties);
+        testId = dbManager.initTest(problemsSetRequest.disciplineId, problemIds);
         problemsDescriptions = dbManager.getProblemsFormulations(testId);
     }
 
