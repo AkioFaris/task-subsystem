@@ -7,6 +7,8 @@ import org.slf4j.LoggerFactory;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static moocplatform.task.enums.DbConfigurations.*;
 
@@ -161,5 +163,74 @@ public class DbManager {
             statement.executeUpdate(addScore);
         }
         logger.info("Added scores successfully");
+    }
+
+    /**
+     * Gets problem's start and final expressions
+     * @param problemId long problem
+     * @return Map<String,String> with "startExpression" and "finalExpression"
+     */
+    public Map<String,String> getStartFinalExpressions(long problemId) throws SQLException {
+        Map<String,String> expressions = new HashMap<>();
+        String selectExpressions = "SELECT pr.start_expression, pr.final_expression FROM problems pr " +
+                "WHERE pr.problem_id = " + problemId;
+
+        Statement statement = connection.createStatement();
+        statement.executeQuery(USE_DB_QUERY);
+        ResultSet resultSet = statement.executeQuery(selectExpressions);
+        resultSet.next();
+        expressions.put("startExpression", resultSet.getString(1));
+        resultSet.next();
+        expressions.put("finalExpression", resultSet.getString(1));
+
+        logger.info("Got start and final expressions " + expressions + "for the problem with id " + problemId);
+        return expressions;
+    }
+
+    /**
+     * Gets problem's data
+     * @param testId long test id
+     * @param localId long local (in test) problem id
+     * @return Map<String,String> problem's data (global id and score in the test)
+     */
+    public Map<String,String> getProblemData(long testId, long localId) throws SQLException {
+        Map<String,String> data = new HashMap<>();
+        logger.info("Input values: testId " + testId + ", localId " + localId);
+        String selectProblemsIdsByTestId = "SELECT pr.problem_id, t_pr.score FROM problems pr " +
+                "INNER JOIN tests_problems t_pr ON pr.problem_id = t_pr.problem_id WHERE t_pr.test_id = " + testId
+                + " AND t_pr.problem_local_id = " + localId;
+
+        Statement statement = connection.createStatement();
+        statement.executeQuery(USE_DB_QUERY);
+        ResultSet resultSet = statement.executeQuery(selectProblemsIdsByTestId);
+        resultSet.next();
+        long id = resultSet.getLong(1);
+        resultSet.next();
+        data.put("problemId", String.valueOf(resultSet.getLong(1)));
+        resultSet.next();
+        data.put("score", String.valueOf(resultSet.getInt(1)));
+        logger.info("Got data " + data + " for the " + localId + " problem of the test with id " + testId);
+        return data;
+    }
+
+    /**
+     * Gets problems scores sum
+     * @param testId long test id
+     * @return it sum of test's problems scores
+     * @throws SQLException
+     */
+    public int getScoresSum(long testId) throws SQLException {
+        logger.info("Input values: testId " + testId);
+        String selectProblemsByTestId = "SELECT t_pr.score FROM tests_problems t_pr WHERE t_pr.test_id = " + testId;
+
+        Statement statement = connection.createStatement();
+        statement.executeQuery(USE_DB_QUERY);
+        ResultSet resultSet = statement.executeQuery(selectProblemsByTestId);
+        int scoresSum = 0;
+        while (resultSet.next()) {
+            scoresSum += resultSet.getInt(1);
+        }
+        logger.info("Got problems scores sum " + scoresSum + "for the test with id " + testId);
+        return scoresSum;
     }
 }
