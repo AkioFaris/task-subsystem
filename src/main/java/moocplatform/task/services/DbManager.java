@@ -180,8 +180,7 @@ public class DbManager {
         ResultSet resultSet = statement.executeQuery(selectExpressions);
         resultSet.next();
         expressions.put("startExpression", resultSet.getString(1));
-        resultSet.next();
-        expressions.put("finalExpression", resultSet.getString(1));
+        expressions.put("finalExpression", resultSet.getString(2));
 
         logger.info("Got start and final expressions " + expressions + "for the problem with id " + problemId);
         return expressions;
@@ -204,11 +203,8 @@ public class DbManager {
         statement.executeQuery(USE_DB_QUERY);
         ResultSet resultSet = statement.executeQuery(selectProblemsIdsByTestId);
         resultSet.next();
-        long id = resultSet.getLong(1);
-        resultSet.next();
         data.put("problemId", String.valueOf(resultSet.getLong(1)));
-        resultSet.next();
-        data.put("score", String.valueOf(resultSet.getInt(1)));
+        data.put("score", String.valueOf(resultSet.getInt(2)));
         logger.info("Got data " + data + " for the " + localId + " problem of the test with id " + testId);
         return data;
     }
@@ -230,7 +226,7 @@ public class DbManager {
         while (resultSet.next()) {
             scoresSum += resultSet.getInt(1);
         }
-        logger.info("Got problems scores sum " + scoresSum + "for the test with id " + testId);
+        logger.info("Got problems scores sum " + scoresSum + " for the test with id " + testId);
         return scoresSum;
     }
 }

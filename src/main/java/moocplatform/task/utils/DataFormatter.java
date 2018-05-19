@@ -6,11 +6,11 @@ package moocplatform.task.utils;
 public class DataFormatter {
 
     /**
-     * Returns expression in upper case without whitespaces
+     * Returns expression without whitespaces
      * @param expression String
      * @return String
      */
     public static String unifyExpression(String expression) {
-        return expression.replaceAll(" ", "").toUpperCase();
+        return expression.replaceAll(" ", "").replaceAll("\n", "");
     }
 }
